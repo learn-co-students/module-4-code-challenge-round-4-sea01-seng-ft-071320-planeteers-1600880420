@@ -12,7 +12,7 @@ class App extends React.Component {
     allPlaneteers: [],
     displayed: [],
     query: '',
-    sortByAge: false,
+    sortByAge: '',
   }
 
   componentDidMount(){
@@ -39,32 +39,57 @@ class App extends React.Component {
     }))
   }
 
-  setSortByAge = (value) => {
-    this.setState(prev => ({
-      ...prev,
-      sortByAge: value
-    }))
+  setSortByAge = (val) => {
+    console.log(val, 'valu')
+    if(val === "sortByAge"){
+      this.setState(prev => ({
+        ...prev,
+        allPlaneteers: prev.displayed,
+        sortByAge: ''
+      }))
+    } else {
+      this.setState(prev => ({
+        ...prev,
+        allPlaneteers: [...prev.allPlaneteers.sort((a,b)=> a.born - b.born)],
+        sortByAge: "sortByAge"
+      }))
+    }
   }
   
   addRandomPlaneteer = (newMember) => {
-    console.log(newMember)
-    // this.setState(prev => ({
-    //   ...prev, 
-    //   allPlaneteers: [...prev.allPlaneteers, new]
-    // }))
+    const x = this.state.allPlaneteers.some(member=> member.name === newMember.name)
+    if(!x) {
+      fetch(`http://localhost:4000/planeteers`, {
+        method: 'POST',
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify(newMember)
+      })
+      .then(res => res.json())
+      .then(member => {
+        this.setState(prev => ({
+          ...prev, 
+          allPlaneteers: [...prev.allPlaneteers, member],
+          displayed: [...prev.allPlaneteers, member]
+        }))
+      })
+    } else {
+      alert('member already added')
+    }
+
+
   }
   
   
   
 
   render(){
-    const { allPlaneteers, query, displayed, addRandomPlaneteer } = this.state
+    const { allPlaneteers, query, displayed, sortByAge } = this.state
     const memberList = allPlaneteers.filter(member => member.name.toLowerCase().includes(query) || member.bio.toLowerCase().includes(query))
     return (
       <div>
         <Header />
-        <SearchBar setQuery={this.setQuery} query={query} setSortByAge={this.setSortByAge} />
-        <RandomButton addRandomPlaneteer={addRandomPlaneteer} />
+        <SearchBar setQuery={this.setQuery} query={query} sortByAge={sortByAge} setSortByAge={this.setSortByAge} />
+        <RandomButton addRandomPlaneteer={this.addRandomPlaneteer} />
         <PlaneteersContainer planeteers={memberList} />
       </div>
     );
