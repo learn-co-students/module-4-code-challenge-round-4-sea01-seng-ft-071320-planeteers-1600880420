@@ -2,9 +2,6 @@ import React from 'react';
 
 class SearchBar extends React.Component {
 
-  state = {
-    checked: ''
-  }
 
   handleChange = (e) => {
     e.preventDefault()
@@ -15,9 +12,10 @@ class SearchBar extends React.Component {
   handleSort = (e) => {
     e.preventDefault()
     const { setSortByAge } = this.props
-    this.state.checked === 'sortByAge' ? this.setState({checked: ''}) : this.setState({checked: 'sortByAge'}) 
-    setSortByAge(this.state.checked)
+    setSortByAge(e.target.value)
   }
+
+  
   
   
   render() {
@@ -30,7 +28,12 @@ class SearchBar extends React.Component {
       </label>
       <label>
         Sort by Age
-        <input type="radio" value="sortByAge" checked={this.state.checked==='sortByAge'} onChange={this.handleSort}/>
+        <input type="radio" value="sortByAge" checked={sortByAge==='sortByAge'} onChange={this.handleSort}/>
+      </label>
+      <label>
+        Clear Sort
+      <input type="radio" value="sortByNone" checked={sortByAge===''} onChange={this.handleSort}/>
+
       </label>
       </div>
     );

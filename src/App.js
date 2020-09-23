@@ -40,13 +40,10 @@ class App extends React.Component {
   }
 
   setSortByAge = (val) => {
-    console.log(val, 'valu')
-    if(val === "sortByAge"){
-      this.setState(prev => ({
-        ...prev,
-        allPlaneteers: prev.displayed,
-        sortByAge: ''
-      }))
+    console.log(val, 'state')
+    if(val === "sortByNone"){
+      this.fetchPlaneteers()
+      this.setState(prev => ({...prev, sortByAge: ''}))
     } else {
       this.setState(prev => ({
         ...prev,
